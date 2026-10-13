@@ -1,14 +1,55 @@
 services:
-
   app:
-    build: .
+    build:
+      context: .
+    init: true
+    restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "127.0.0.1:${APP_PORT:-3000}:3000"
+    environment:
+      PORT: "3000"
+      NODE_ENV: production
+      DB_HOST: banco
+      DB_NAME: ${DB_NAME:?Configure DB_NAME no .env}
+      DB_USER: ${DB_USER:?Configure DB_USER no .env}
+      DB_PASSWORD: ${DB_PASSWORD:?Configure DB_PASSWORD no .env}
+    depends_on:
+      banco:
+        condition: service_started
+    networks:
+      - backend
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    pids_limit: 100
+    cpus: 0.50
+    mem_limit: 128m
 
   banco:
-    image: mysql:latest
+    image: mysql:8.4
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: sistema
-    ports:
-      - "3306:3306"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Configure MYSQL_ROOT_PASSWORD no .env}
+      MYSQL_DATABASE: ${DB_NAME:?Configure DB_NAME no .env}
+      MYSQL_USER: ${DB_USER:?Configure DB_USER no .env}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Configure DB_PASSWORD no .env}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    cpus: 1.00
+    mem_limit: 512m
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mysql_data:

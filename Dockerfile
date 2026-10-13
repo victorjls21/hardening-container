@@ -1,16 +1,11 @@
-FROM ubuntu:latest
+FROM node:22-alpine
 
+ENV NODE_ENV=production
 WORKDIR /app
 
-COPY . .
+COPY --chown=node:node app/package.json ./package.json
+COPY --chown=node:node app/server.js ./server.js
 
-RUN apt-get update
-RUN apt-get install -y nodejs npm
-
-RUN npm install
-
-ENV DB_PASSWORD=123456
-
+USER node
 EXPOSE 3000
-
-CMD ["node", "app/server.js"]
+CMD ["node", "server.js"]

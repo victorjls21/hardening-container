@@ -1,25 +1,18 @@
-# Hardening Container
+# Hardening Container — solução da atividade
 
-## Estrutura inicial
+Implementação das 8 etapas de `docs/atividade.md`. Detalhes e respostas em [HARDENING.md](HARDENING.md).
 
-O projeto possui a seguinte estrutura:
+## Executar
 
-```text
-projeto/
-├── app/
-├── docs/
-├── Dockerfile
-└── docker-compose.yml
-```
+1. Crie `.env` a partir de `.env.example` e preencha valores fortes. Para a entrega local, este arquivo é fornecido separadamente e **não deve ir ao GitHub**.
+2. Rode `docker compose config -q` para validar as referências das variáveis.
+3. Rode `docker compose up -d --build`.
+4. Abra <http://127.0.0.1:3000> (`Olá mundo!`) e <http://127.0.0.1:3000/health> (`OK`).
+5. Rode `docker compose exec app id` para verificar o usuário não-root.
+6. Para finalizar: `docker compose down` (preserva dados) ou `docker compose down -v` (apaga também o volume do banco).
 
----
+O MySQL fica somente na rede Docker interna e não publica a porta 3306. A aplicação de exemplo apenas serve HTTP; não consulta o banco. A execução Docker deve ser validada no computador do aluno; este pacote não inclui provas de testes de runtime.
 
-## Cenário
+## Entrega
 
-Uma empresa possui uma aplicação web executada em containers Docker. A aplicação funciona corretamente em ambiente de desenvolvimento, porém uma auditoria de segurança identificou que sua configuração não atende aos requisitos mínimos para execução em produção.
-
-A equipe de DevSecOps foi responsável por realizar o hardening do ambiente.
-
-O objetivo é reduzir a superfície de ataque, aplicar o princípio do menor privilégio, proteger informações sensíveis, controlar o consumo de recursos e reduzir a exposição desnecessária dos serviços.
-
-Após as alterações, a aplicação deverá continuar funcionando normalmente.
+Publicar no fork os arquivos de `solucao-hardening-container.zip` (sem `.env`) e entregar o ZIP local de ambiente separadamente, conforme o enunciado do professor. **Nunca fazer commit de `.env`**.

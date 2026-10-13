@@ -1,0 +1,10 @@
+.git
+.env
+.env.*
+!.env.example
+node_modules
+*.zip
+*.log
+docs
+README.md
+HARDENING.md
